@@ -9,6 +9,16 @@ output: slidy_presentation
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+# Why Use Object Oriented Programming?
+
+- You need to go beyond `data.frame`s!
+- multiple pieces of information need to go together
+  - data.frame: when it was generated, who generated it
+- You want your data to be part of a pipeline 
+- Have other people developing methods
+
+> Any of these is an opportunity to encapsulate data together into an object!
+
 # Use Case
 
 Results object for your package
@@ -31,17 +41,8 @@ Results object for your package
 - abstraction/API for data in your code
   - Lets users/coders programatically access data without lots of code
 - allow for code reuse and modular code design
-- Can be a natural way to map data to a problem
+- Can be a natural way to map data to a problem logically
 
-# Why Use Object Oriented Programming?
-
-- You need to go beyond `data.frame`s!
-- multiple pieces of information need to go together
-  - data.frame: when it was generated, who generated it
-- You want your data to be part of a pipeline 
-- Have other people developing methods
-
-> Any of these is an opportunity to encapsulate data together into an object!
 
 # Basic OOP Concepts
 
@@ -58,6 +59,7 @@ Use S3 if:
 
 - You are writing a package with a results object
 - You want to have `print()`, `summary()`, and `plot()` methods
+  - generic methods
 - Someone isn't going to do something programmatic with your output
 
 # S4
@@ -67,6 +69,7 @@ Use S4 if:
 - The object is going to be used in more than one package
   - Examples: `matrix`, `ExpressionSet`
 - You need type checking for methods
+- immutability is important
 - You need to check the validity of an object
   - make sure that multiple data elements in your object are consistent
   - make sure that metadata is 
@@ -83,21 +86,18 @@ Use R6 if:
 
 # Functionality of R's Object Systems
 
-
 http://adv-r.had.co.nz/OO-essentials.html#s3
 
 https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d14f9.html
 
 ## S4/Bioconductor
 
-Use when data integrity is very important
-
-validity methods
+- Use when data integrity is very important
+  - validity methods
 
 Common Data Types that can work in a pipeline:
-
-- `ExpressionSet` (matrix + metadata)
-- 
+  - `ExpressionSet` (matrix + metadata)
+  - `matrix` package
 
 From [Chambers](https://projecteuclid.org/download/pdfview_1/euclid.ss/1408368569):
 
