@@ -1,7 +1,7 @@
 ---
 title: "Object Oriented Programming in R"
-author: "Ted Laderas"
-date: "February 21, 2019"
+author: "Scott Chamberlain and Ted Laderas"
+date: "`r Sys.Date()`"
 output: slidy_presentation
 ---
 
@@ -11,11 +11,20 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Use Case
 
-data (with versioning)
+Results object for your package
 
-data.frame
-author
-date_updated
+- data.frame
+- author
+- date_updated
+
+# What do you want people to do with your results object?
+
+- `print()`, `plot()`, `summary()`
+  - Most R Packages
+- Write computing routines as part of a pipeline
+  - BioConductor
+- Internal package representation of results
+  - `shiny`
 
 # What are objects?
 
