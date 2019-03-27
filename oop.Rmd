@@ -83,11 +83,12 @@ Use R6 if:
 - You want internal validity
 - You are used to Java type objects
 - Mutability of objects is important to you
+- Maintaining state
+- Public/Private methods
 
 # Functionality of R's Object Systems
 
 http://adv-r.had.co.nz/OO-essentials.html#s3
-
 https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d14f9.html
 
 ## S4/Bioconductor
