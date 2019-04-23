@@ -36,6 +36,19 @@ Results object for your package
 - Internal package representation of results
   - `shiny`
 
+From [Chambers](https://projecteuclid.org/download/pdfview_1/euclid.ss/1408368569):
+
+> The main ideas of object-oriented programming are also quite simple and intuitive:
+1. Everything we compute with is an object, and objects should be structured to suit the goals of our computations.
+2. For this, the key programming tool is a *class definition* saying that objects belonging to this class share structure defined by properties they all have, with the properties being themselves objects of some specified class.
+3. A class can inherit from (contain) a simpler superclass, such that an object of this class is also an object of the superclass.
+4. In order to compute with objects, we can define methods that are only used when objects are of certain classes.
+
+https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d14f9.html
+
+
+
+
 # What are objects?
 
 - abstraction/API for data in your code
@@ -52,6 +65,13 @@ Results object for your package
     - code specific to the object
 - Inheritance
     - Can extend previous code
+- Polymorphism
+  
+  
+# Classes versus Objects
+
+- A class
+- An Object is an instantiation of that object
 
 # S3
 
@@ -67,13 +87,13 @@ Use S3 if:
 Use S4 if:
 
 - The object is going to be used in more than one package
-  - Examples: `matrix`, `ExpressionSet`
+  - Examples: `matrix`, `ExpressionSet` (Bioconductor)
 - You need type checking for methods
 - immutability is important
 - You need to check the validity of an object
   - make sure that multiple data elements in your object are consistent
-  - make sure that metadata is 
-  - Other packages may create them
+  - make sure that metadata is correct
+  - Other packages may create them 
 
 # R6
 
@@ -86,29 +106,11 @@ Use R6 if:
 - Maintaining state
 - Public/Private methods
 
+
+
+
 # Functionality of R's Object Systems
 
 http://adv-r.had.co.nz/OO-essentials.html#s3
 https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d14f9.html
-
-## S4/Bioconductor
-
-- Use when data integrity is very important
-  - validity methods
-
-Common Data Types that can work in a pipeline:
-  - `ExpressionSet` (matrix + metadata)
-  - `matrix` package
-
-From [Chambers](https://projecteuclid.org/download/pdfview_1/euclid.ss/1408368569):
-
-> The main ideas of object-oriented programming are also quite simple and intuitive:
-1. Everything we compute with is an object, and objects should be structured to suit the goals of our computations.
-2. For this, the key programming tool is a *class definition* saying that objects belonging to this class share structure defined by properties they all have, with the properties being themselves objects of some specified class.
-3. A class can inherit from (contain) a simpler superclass, such that an object of this class is also an object of the superclass.
-4. In order to compute with objects, we can define methods that are only used when objects are of certain classes.
-
-https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d14f9.html
-
-
 

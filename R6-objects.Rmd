@@ -1,0 +1,21 @@
+---
+title: "R6 Classes"
+output: html_notebook
+---
+
+```{r}
+source("R/classes-R6.R")
+```
+
+## Making a new object
+
+
+
+
+## Methods are attached to the object
+
+
+
+
+## Copy By Reference
+

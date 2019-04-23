@@ -1,0 +1,31 @@
+---
+title: "S4 Objects"
+output: html_notebook
+---
+
+```{r}
+source("R/classes-S4.R")
+```
+
+## Making an S4 object (constructors)
+
+```{r}
+new("")
+```
+
+## Slots
+
+
+## Methods
+
+Write a method called `setFilingStatus` for the `taxReturn` class that takes the `taxReturn` class and a logical value. It should return the object with the tax status set. 
+
+
+### Signatures
+
+
+
+## Resources
+
+- R - S4 Classes and Methods: https://kasperdanielhansen.github.io/genbioconductor/html/R_S4.html
+- A practical Tutorial on S4 Programming: https://www.bioconductor.org/help/course-materials/2013/CSAMA2013/friday/afternoon/S4-tutorial.pdf
