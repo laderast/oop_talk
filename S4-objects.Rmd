@@ -5,20 +5,42 @@ output: html_notebook
 
 ```{r}
 source("R/classes-S4.R")
+library(here)
+my_result_object <- readRDS(here("data/s4_stat_result.rds"))
 ```
 
-## Making an S4 object (constructors)
+## `getClass`
 
 ```{r}
-new("")
+class(my_result_object)
+
+str(my_result_object)
 ```
 
 ## Slots
 
+```{r}
+slotNames(my_result_object)
+```
 
 ## Methods
 
-Write a method called `setFilingStatus` for the `taxReturn` class that takes the `taxReturn` class and a logical value. It should return the object with the tax status set. 
+We've defined two methods for our class: 
+
+```{r}
+get_statistics
+showMethods("get_statistics")
+getMethod(f="get_statistics", signature = signature("StatPackageResult"))
+
+get_significant_results
+showMethods("get_significant_results")
+
+
+```
+
+
+
+Write a method called `return_significant_groups()` for the `` class that takes the `taxReturn` class and a logical value. It should return the object with the tax status set. 
 
 
 ### Signatures
@@ -29,3 +51,4 @@ Write a method called `setFilingStatus` for the `taxReturn` class that takes the
 
 - R - S4 Classes and Methods: https://kasperdanielhansen.github.io/genbioconductor/html/R_S4.html
 - A practical Tutorial on S4 Programming: https://www.bioconductor.org/help/course-materials/2013/CSAMA2013/friday/afternoon/S4-tutorial.pdf
+- https://www.cyclismo.org/tutorial/R/s4Classes.html
