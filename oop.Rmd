@@ -9,6 +9,13 @@ output: slidy_presentation
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+# What are objects?
+
+- abstraction/API for data in your code
+  - Lets users/coders programatically access data without lots of code
+- allow for code reuse and modular code design
+- Can be a natural way to map data to a problem logically
+
 # Why Use Object Oriented Programming?
 
 - You need to go beyond `data.frame`s!
@@ -23,18 +30,21 @@ knitr::opts_chunk$set(echo = FALSE)
 
 Results object for your package
 
-- data.frame
-- author
-- date_updated
+- data = `data.frame`
+- statistics = `data.frame`
+
+We want people to do something with this object!
 
 # What do you want people to do with your results object?
 
-- `print()`, `plot()`, `summary()`
-  - Most R Packages
-- Write computing routines as part of a pipeline
-  - BioConductor
-- Internal package representation of results
+- `print()`, `plot()`, `summary()` (S3)
+  - Most R Packages 
+- Write computing routines as part of a pipeline (S4)
+  - BioConductor 
+- Internal package representation of results (R6)
   - `shiny`
+
+# Chambers
 
 From [Chambers](https://projecteuclid.org/download/pdfview_1/euclid.ss/1408368569):
 
@@ -48,26 +58,20 @@ https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d
 
 
 
-
-# What are objects?
-
-- abstraction/API for data in your code
-  - Lets users/coders programatically access data without lots of code
-- allow for code reuse and modular code design
-- Can be a natural way to map data to a problem logically
-
-
 # Basic OOP Concepts
 
 - Object
     - slots for storing data
 - Methods
     - code specific to the object
+    - may be separate from the object (S3,S4) or part of object (R6)
 - Inheritance
-    - Can extend previous code/objects
+    - Can extend previously defined classes
     - Don't have to reinvent the wheel
+    - can `override` parts of the definition
 - Polymorphism
-  
+    - The ability to inherit from multiple classes
+    - Not covered today
   
 # Classes versus Objects
 
@@ -76,13 +80,17 @@ https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d
 
 # WTH
 
+There are *three* object systems in R:  
 
+- S3
+- S4
+- R6
 
 # S3
 
 Use S3 if:
 
-- You are writing a package with a results object
+- You are writing a package that returns a simple results object
 - You want to have `print()`, `summary()`, and `plot()` methods
   - generic methods
 - Someone isn't going to do something programmatic with your output
@@ -93,12 +101,11 @@ Use S4 if:
 
 - The object is going to be used in more than one package
   - Examples: `matrix` (`matrix` package), `ExpressionSet` (Bioconductor)
-- You need type checking for methods
+- You need type checking for slots in your object
 - immutability is important
 - You need to check the validity of an object
   - make sure that multiple data elements in your object are consistent
   - make sure that metadata is correct
-  - Other packages may create them 
 
 # R6
 
@@ -106,13 +113,10 @@ Use R6 if:
 
 - You want methods to be attached to your object
 - You want internal validity
-- You are used to Java type objects
+- You are used to Java/Python type objects
 - Mutability of objects is important to you
-- Maintaining state
+- Maintaining state is important
 - Public/Private methods
-
-
-
 
 # Functionality of R's Object Systems
 

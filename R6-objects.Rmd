@@ -4,7 +4,9 @@ output: html_notebook
 ---
 
 ```{r}
-source("R/classes-R6.R")
+library(here)
+library(R6)
+source(here("R/classes-R6.R"))
 ```
 
 ## Making a new object
@@ -19,3 +21,10 @@ source("R/classes-R6.R")
 
 ## Copy By Reference
 
+
+
+## R6 is Weird to most R users
+
+You probably don't want have your final results object as an R6 class. Mostly because most users aren't familiar with R6. 
+
+I use R6 in my Shiny apps, 

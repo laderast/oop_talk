@@ -5,7 +5,7 @@ output: html_notebook
 
 # Loading an Object
 
-
+We're going to load an object called `my_result_object`, which has the class `StatsPackageResult`. 
 
 ```{r}
 source("R/classes-S4.R")
@@ -31,15 +31,16 @@ slotNames(my_result_object)
 
 We've defined two methods that work on our class: `statistics()` and `get_significant_results()`. 
 
+Let's try out and see what `statistics()` does:
+
+```{r}
+statistics(my_result_object)
+```
+
 ```{r}
 statistics
 showMethods("statistics")
 getMethod(f="statistics", signature = signature("StatPackageResult"))
-
-get_significant_results
-showMethods("get_significant_results")
-getMethod(f="get_significant_results", signature = c("StatPackageResult", "numeric"))
-
 ```
 
 # PROBLEM
@@ -60,8 +61,29 @@ We know that the required slots are for `data`, which needs to be `data.frame`, 
 new_obj <- StatPackageResult(data=ChickWeight, statistics=c(1,1,1))
 ```
 
+# How did we make the `StatsPackageResult` Class?
+
+Take a look at `R/classes-S4.R`. The first thing we did was define the class with `setClass`:
+
+```
+StatPackageResult <- setClass("StatPackageResult",
+                       slots = c(data = "data.frame",
+                                 statistics = "data.frame"),
+                       prototype = c(data=NA, statistics=NA)
+                       )
+```
+
+# Defining a method for `StatsPackageResult`
+
+Because methods can be dispatched on multiple signatures, you first have to define the method using `setGeneric()`:
+
+```
+
+```
+
 # Resources
 
-- R - S4 Classes and Methods: https://kasperdanielhansen.github.io/genbioconductor/html/R_S4.html
+- S4 Classes and Methods: https://kasperdanielhansen.github.io/genbioconductor/html/R_S4.html
 - A practical Tutorial on S4 Programming: https://www.bioconductor.org/help/course-materials/2013/CSAMA2013/friday/afternoon/S4-tutorial.pdf
 - https://www.cyclismo.org/tutorial/R/s4Classes.html
+- S4 

@@ -5,7 +5,6 @@ StatPackageResult <- setClass("StatPackageResult",
                        slots = c(data = "data.frame",
                                  statistics = "data.frame"),
                        prototype = c(data=NA, statistics=NA)
-                       
                        )
 
 #always need to define the generic method first
