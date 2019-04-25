@@ -64,14 +64,19 @@ https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d
 - Methods
     - code specific to the object
 - Inheritance
-    - Can extend previous code
+    - Can extend previous code/objects
+    - Don't have to reinvent the wheel
 - Polymorphism
   
   
 # Classes versus Objects
 
-- A class
-- An Object is an instantiation of that object
+- A *class* is a description
+- An *Object* is an instantiation of that class
+
+# WTH
+
+
 
 # S3
 
@@ -87,7 +92,7 @@ Use S3 if:
 Use S4 if:
 
 - The object is going to be used in more than one package
-  - Examples: `matrix`, `ExpressionSet` (Bioconductor)
+  - Examples: `matrix` (`matrix` package), `ExpressionSet` (Bioconductor)
 - You need type checking for methods
 - immutability is important
 - You need to check the validity of an object

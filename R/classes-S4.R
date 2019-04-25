@@ -1,15 +1,17 @@
 library(dplyr)
 
-#return results
+#S4 object definition
 StatPackageResult <- setClass("StatPackageResult",
                        slots = c(data = "data.frame",
-                                 statistics = "data.frame"
-                                 ))
+                                 statistics = "data.frame"),
+                       prototype = c(data=NA, statistics=NA)
+                       
+                       )
 
 #always need to define the generic method first
 setGeneric(name= "statistics", 
            def= function(object) {
-             standardGeneric("get_statistics")
+             standardGeneric("statistics")
              }
            )
 
@@ -45,3 +47,10 @@ setMethod("get_significant_results",
 
 #checking things about our class
 #setValidity()
+
+
+
+
+
+#Inheritance: making a new class from our old class
+

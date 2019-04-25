@@ -3,6 +3,10 @@ title: "S4 Objects"
 output: html_notebook
 ---
 
+# Loading an Object
+
+
+
 ```{r}
 source("R/classes-S4.R")
 library(here)
@@ -25,29 +29,38 @@ slotNames(my_result_object)
 
 ## Methods
 
-We've defined two methods for our class: 
+We've defined two methods that work on our class: `statistics()` and `get_significant_results()`. 
 
 ```{r}
-get_statistics
-showMethods("get_statistics")
-getMethod(f="get_statistics", signature = signature("StatPackageResult"))
+statistics
+showMethods("statistics")
+getMethod(f="statistics", signature = signature("StatPackageResult"))
 
 get_significant_results
 showMethods("get_significant_results")
-
+getMethod(f="get_significant_results", signature = c("StatPackageResult", "numeric"))
 
 ```
 
+# PROBLEM
 
+Show the method code for `get_significant_results()`. Hint: you'll have to find the signature for the method before you can use `getMethod()` 
 
-Write a method called `return_significant_groups()` for the `` class that takes the `taxReturn` class and a logical value. It should return the object with the tax status set. 
+```{r}
 
+```
 
-### Signatures
+# Making a new `StatsPackageResult` object
 
+Now that you see the basics behind the `StatsPackageResult` class, you can now make a `StatsPackageResult` object. You will probably do this in your package code when you're returning a result. 
 
+We know that the required slots are for `data`, which needs to be `data.frame`, and `statistics`, which also needs to be a `data.frame`. What if we make a new object where `statistics` is a `vector`?
 
-## Resources
+```{r}
+new_obj <- StatPackageResult(data=ChickWeight, statistics=c(1,1,1))
+```
+
+# Resources
 
 - R - S4 Classes and Methods: https://kasperdanielhansen.github.io/genbioconductor/html/R_S4.html
 - A practical Tutorial on S4 Programming: https://www.bioconductor.org/help/course-materials/2013/CSAMA2013/friday/afternoon/S4-tutorial.pdf
