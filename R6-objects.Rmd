@@ -21,10 +21,22 @@ source(here("R/classes-R6.R"))
 
 ## Copy By Reference
 
+R6 objects are built on environments. 
 
 
-## R6 is Weird to most R users
+## Maintaining State is Important: R6/Shiny
 
-You probably don't want have your final results object as an R6 class. Mostly because most users aren't familiar with R6. 
+The main use case I've found for R6 is for building data objects in Shiny. The data is encapsulated in an R6 object which can provide different versions of the data given a Shiny visualization.
 
-I use R6 in my Shiny apps, 
+I use R6 in my Shiny apps, for modularity reasons.
+
+
+## Note: R6 is Weird to most R users
+
+You probably don't want have your final results object as an R6 class. Mostly because most users aren't familiar with R6 and using methods attached to an object. I learned this the hard way.
+
+
+## Resources
+
+https://adv-r.hadley.nz/r6.html
+

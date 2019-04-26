@@ -3,38 +3,92 @@ title: "S4 Objects"
 output: html_notebook
 ---
 
-# Loading an Object
+# Before you start
+
+Make sure that you've clicked on the `oop_talk.rproj` file to open this folder as a project.
+
+# What are S4 Objects?
+
+S4 objects are like S3 objects, but are stricter. Whereas an S3 object is a list, and you can put anything in the list, S4 objects have *slots*: these are specific data types, such as `vectors`, `data.frames`. You can also put additional restrictions on these data frames.
+
+In S3, you can literally change the class of any object by using the `class()` function:
+
+```{r}
+my_list <- list(a="blah", b=c(1,2,3))
+class(my_list) <- "newclass"
+class(my_list)
+```
+
+This flexibility can be a very bad thing when trying to get a data structure to work consistently across a bunch of packages. Things might not work like you expect them to, or worse, the loose definition of the object can cause compatibility issues down the line. So that's why you would want to be strict.
+
+S4 also has *methods*, and you can be strict about what arguments go into each method. S4 does this by first defining a generic function, and then specifying a method with strict typing.
+
+# Properties of S4 Objects
+
+## Loading an Object
 
 We're going to load an object called `my_result_object`, which has the class `StatsPackageResult`. 
 
 ```{r}
 source("R/classes-S4.R")
+#we use here
 library(here)
 my_result_object <- readRDS(here("data/s4_stat_result.rds"))
 ```
 
-## `getClass`
+## What class is my object?
 
 ```{r}
 class(my_result_object)
+```
 
-str(my_result_object)
+Okay we have an object, but how do we know it's an S4 object?
+
+```{r}
+isS4(my_result_object)
 ```
 
 ## Slots
+
+Here we can see the `slots` of `my_result_object`. Slots hold different parts of the data object. We have to be explicit in what data types go in them.
 
 ```{r}
 slotNames(my_result_object)
 ```
 
-## Methods
 
-We've defined two methods that work on our class: `statistics()` and `get_significant_results()`. 
-
-Let's try out and see what `statistics()` does:
+We can also ask about the S4 class - this gives us more information about what is in the individual slots:
 
 ```{r}
-statistics(my_result_object)
+
+getSlots("StatPackageResult")
+```
+
+## We need more info
+
+We can use the `getClass` function to get more info about the `StatsPackageResult` class.
+
+```{r}
+getClass("StatPackageResult")
+```
+
+## Looking at the object's structure
+
+We can use the `str()` function to look at the overall structure of our object. We can see information about the actual `data.frame`s in the `data` slot and the `statistics` slot.
+
+```{r}
+str(my_result_object)
+
+```
+
+# Methods
+
+We've defined two methods that work on our class: `get_statistics()` and `get_significant_results()`. 
+
+Let's try out and see what `get_statistics()` does:
+
+```{r}
+get_statistics(my_result_object)
 ```
 
 ```{r}
@@ -43,27 +97,61 @@ showMethods("statistics")
 getMethod(f="statistics", signature = signature("StatPackageResult"))
 ```
 
+How do we know about the methods that belong to a class? Hopefully, this is documented in the documentation about the class:
+
+However, one big issue is that there is no easy way to find all the methods that act upon the class that are in other packages.
+
 # PROBLEM
+
+There is another method for our `StatsPackageResult` class: `get_significant_results()`. Try it out below:
+
+```{r}
+get_significant_results(my_result_object, cutoff = 0.1)
+```
 
 Show the method code for `get_significant_results()`. Hint: you'll have to find the signature for the method before you can use `getMethod()` 
 
 ```{r}
+##Space for your answer here
+
 
 ```
 
-# Making a new `StatsPackageResult` object
+# Making a new `StatsPackageResult` object/Type Checking
 
 Now that you see the basics behind the `StatsPackageResult` class, you can now make a `StatsPackageResult` object. You will probably do this in your package code when you're returning a result. 
 
-We know that the required slots are for `data`, which needs to be `data.frame`, and `statistics`, which also needs to be a `data.frame`. What if we make a new object where `statistics` is a `vector`?
+The `StatsPackageResult()` function is called an constructor. We need to give it values for each of the slots to make a valid object.
+
+```{r}
+#first define the statistics slot
+stat_frame <- data.frame(group=c("setosa", "virginica", "versicolor"), pvalue=c(0.5, 0.2, 0.001))
+
+my_s4_object_new <- StatPackageResult(data = iris, statistics = stat_frame)
+```
+
+We know that the required slots are for `data`, which needs to be a `data.frame`, and `statistics`, which also needs to be a `data.frame`. What if we make a new object where `statistics` is a `vector`?
 
 ```{r}
 new_obj <- StatPackageResult(data=ChickWeight, statistics=c(1,1,1))
 ```
 
-# How did we make the `StatsPackageResult` Class?
+What happens when you only provide a `data` argument? What happens?
 
-Take a look at `R/classes-S4.R`. The first thing we did was define the class with `setClass`:
+```{r}
+cw <- data.frame(ChickWeight)
+new_obj2 <- StatPackageResult(data=cw)
+```
+
+We also have a requirement that the `statistics` slot has a `data.frame` with the name `pvalue`. We'll see how we did this in the `Validity` section below.
+
+```{r}
+new_obj3 <- StatPackageResult(data=cw, statistics=cw)
+```
+
+# How did we define the `StatsPackageResult` Class?
+
+Take a look at `R/classes-S4.R`. The first thing we did was define the class with `setClass`, where we can specify the data types of each of the slots. Note that this also defines what's called the *constructor*, or the function that lets us make new objects.
 
 ```
 StatPackageResult <- setClass("StatPackageResult",
@@ -73,17 +161,73 @@ StatPackageResult <- setClass("StatPackageResult",
                        )
 ```
 
-# Defining a method for `StatsPackageResult`
+# Defining methods for `StatsPackageResult`
+
+S4 methods are designed to be flexible. The downside to the flexibility is that they are a little harder to program with and set up. Whereas in S3, we could define a method for our S3 class by just naming a function with a dot (such as `print.stats_result`), S4 requires us to first establish a `generic` function. 
+
+The `generic` function is designed to use different code based on the class of the object. Take a look at the generic method `show`. You can see all of the different classes it works on. This `object="Module"` is called a *signature*, and it defines how the generic function decides which method code to dispatch.
+
+Here are all the S4 methods for the `show` generic function based on their signature:
+
+```{r}
+showMethods("show")
+```
 
 Because methods can be dispatched on multiple signatures, you first have to define the method using `setGeneric()`:
 
 ```
+#always need to define the generic method first
+setGeneric(name= "statistics", 
+           def= function(object) {
+             standardGeneric("statistics")
+             }
+           )
+```
+This creates a *generic* function called `statistics`, which has a single argument: `object`. Note that `object` isn't limited to our `StatsPackageResult` class. We could also define a `statistics` method for other S4 objects.
+
+Once the generic is created, you can now define a method for your class. 
 
 ```
+#define the function
+setMethod(f="statistics",
+          #signature is how the function is called
+          signature = signature("StatPackageResult"), 
+          definition = function(object){
+            return(object@statistics)
+          })
+```
+
+# Validity
+
+Say you need to have another requirement for the `data.frame` in the `statistics` slot, such as requiring a column called `pvalue`. We can do this by adding a validity function using `setValidity`:
+
+```
+check_stats_object <- function(object){
+  #check whether statistics data.frame contains "pvalue"
+  #as column name
+  if(colnames(get_statistics(object)) %in% "pvalue") {TRUE}
+  else{ "statistics slot needs a pvalue column"}
+}
+
+setValidity("StatsResultObject", check_stats_object)
+
+```
+
+# Inheritance/Overriding Methods
+
+The best thing about Object Oriented Programming is that you don't have to reinvent the wheel. You can *extend* a current class definition to make a new class.
+
+```
+
+```
+
+
+## PROBLEM
+
 
 # Resources
 
 - S4 Classes and Methods: https://kasperdanielhansen.github.io/genbioconductor/html/R_S4.html
 - A practical Tutorial on S4 Programming: https://www.bioconductor.org/help/course-materials/2013/CSAMA2013/friday/afternoon/S4-tutorial.pdf
 - https://www.cyclismo.org/tutorial/R/s4Classes.html
-- S4 
+- Advanced R: 
