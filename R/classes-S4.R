@@ -59,12 +59,15 @@ AnovaResult <- setClass("AnovaResult",
                         contains= "StatPackageResult",
                         slots=c(groups="character"))
 
-#Overriding the get_statistics method
+#Overriding the get_statistics method for StatPackageResult
 setMethod("get_statistics",
-          signature = signature(object = "AnovaResult", cutoff="numeric"),
+          signature = signature(object = "AnovaResult"),
 
-            definition = function(object, cutoff){
+            definition = function(object){
                 print(object@groups)
-                callNextMethod()
+                #now run the code that belongs to the method
+                #for the superclass ("StatPackageResult")
+                callNextMethod(object)
               }
           )
+
