@@ -1,6 +1,7 @@
 ---
 title: "S4 Objects"
 output: html_notebook
+author: Ted Laderas
 ---
 
 # Before you start
@@ -21,7 +22,7 @@ class(my_list)
 
 This flexibility can be a very bad thing when trying to get a data structure to work consistently across a bunch of packages. Things might not work like you expect them to, or worse, the loose definition of the object can cause compatibility issues down the line. So that's why you would want to be strict.
 
-S4 also has *methods*, and you can be strict about what arguments go into each method. S4 does this by first defining a generic function, and then specifying a method with strict typing.
+S4 also has *methods* like *S3*, and you also have to be strict about what arguments go into each method. S4 does this by first defining a generic function, and then specifying a method with strict typing.
 
 # Properties of S4 Objects
 
@@ -56,7 +57,6 @@ Here we can see the `slots` of `my_result_object`. Slots hold different parts of
 slotNames(my_result_object)
 ```
 
-
 We can also ask about the S4 class - this gives us more information about what is in the individual slots:
 
 ```{r}
@@ -81,6 +81,14 @@ str(my_result_object)
 
 ```
 
+## Accessing a slot directly
+
+S4 uses the `@` sign instead of the `$` sign to access the data in a slot.
+
+```{r}
+glimpse(my_result_object@data)
+```
+
 # Methods
 
 We've defined two methods that work on our class: `get_statistics()` and `get_significant_results()`. 
@@ -92,12 +100,12 @@ get_statistics(my_result_object)
 ```
 
 ```{r}
-statistics
-showMethods("statistics")
-getMethod(f="statistics", signature = signature("StatPackageResult"))
+get_statistics
+showMethods("get_statistics")
+getMethod(f="get_statistics", signature = signature("StatPackageResult"))
 ```
 
-How do we know about the methods that belong to a class? Hopefully, this is documented in the documentation about the class:
+How do we know about the methods that belong to a class? Hopefully, this is documented in the documentation about the class.
 
 However, one big issue is that there is no easy way to find all the methods that act upon the class that are in other packages.
 
@@ -121,7 +129,7 @@ Show the method code for `get_significant_results()`. Hint: you'll have to find 
 
 Now that you see the basics behind the `StatsPackageResult` class, you can now make a `StatsPackageResult` object. You will probably do this in your package code when you're returning a result. 
 
-The `StatsPackageResult()` function is called an constructor. We need to give it values for each of the slots to make a valid object.
+The `StatsPackageResult()` function is called an *constructor*. We need to give it values for each of the slots to make a valid object. (There is also a way to make a new object with the `new()` function, but it's currently not recommended.)
 
 ```{r}
 #first define the statistics slot
@@ -133,7 +141,8 @@ my_s4_object_new <- StatPackageResult(data = iris, statistics = stat_frame)
 We know that the required slots are for `data`, which needs to be a `data.frame`, and `statistics`, which also needs to be a `data.frame`. What if we make a new object where `statistics` is a `vector`?
 
 ```{r}
-new_obj <- StatPackageResult(data=ChickWeight, statistics=c(1,1,1))
+cw <- as.data.frame(ChickWeight)
+new_obj <- StatPackageResult(data=cw, statistics=c(1,1,1))
 ```
 
 What happens when you only provide a `data` argument? What happens?
@@ -205,7 +214,7 @@ Say you need to have another requirement for the `data.frame` in the `statistics
 check_stats_object <- function(object){
   #check whether statistics data.frame contains "pvalue"
   #as column name
-  if(colnames(get_statistics(object)) %in% "pvalue") {TRUE}
+  if("pvalue" %in% colnames(get_statistics(object))) {TRUE}
   else{ "statistics slot needs a pvalue column"}
 }
 
@@ -213,21 +222,71 @@ setValidity("StatsResultObject", check_stats_object)
 
 ```
 
-# Inheritance/Overriding Methods
+# Inheritance
 
-The best thing about Object Oriented Programming is that you don't have to reinvent the wheel. You can *extend* a current class definition to make a new class.
+The best thing about Object Oriented Programming is that you don't have to reinvent the wheel. You can *extend* a current class definition to make a new class. Here we're making a new class `AnovaResult` that is based on our `StatPackageResult`. You can see we use the `contains` argument to say we're extending `StatPackageResult`. 
+
+Also, note we're adding a `groups` slot. The other slots from `StatPackageResult`, `data` and `statistics` are *inherited* from `StatPackageResult`.
 
 ```
-
+#Inheritance: making a new class from our old class
+AnovaResult <- setClass("AnovaResult", 
+                        contains= "StatPackageResult",
+                        slots=c(groups="character"))
 ```
 
+```{r}
+stat_frame <- data.frame(group=c("setosa", "virginica", "versicolor"), pvalue=c(0.5, 0.2, 0.001))
+groups <- c("setosa", "virginica", "versicolor")
 
-## PROBLEM
+anova_result_s4 <- AnovaResult(data = iris, statistics = stat_frame, groups=groups)
 
+#get the class definition
+getClass("AnovaResult")
+```
+
+Show the new structure of our inherited object.
+
+```{r}
+str(anova_result_s4)
+```
+
+# Extending methods
+
+Methods are class specific, but they also inherit from the *super* class that our new class is derived from. This means you can add extra code to a method by *overriding* the method for the new class and using `callNextMethod()` to execute the code belonging to the superclass (which is `StatPackageResult`).
+
+```
+#Overriding the get_statistics method for StatPackageResult
+setMethod("get_statistics",
+          signature = signature(object = "AnovaResult"),
+
+            definition = function(object){
+                print(object@groups)
+                #now run the code that belongs to the method
+                #for the superclass ("StatPackageResult")
+                callNextMethod(object)
+              }
+          )
+```
+Try running `get_statistics()` on `anova_result_s4`. It will first print out `group` and then return the `statistics` slot.
+
+```{r}
+get_statistics(anova_result_s4)
+```
+
+# What we didn't cover today:
+
+- Updating old objects
+- Getting S3 and S4 to work together
+- Polymorphism
+  - The ability of a class to inherit from multiple classes
+  - Hadley covers this much better than I could: https://adv-r.hadley.nz/s4.html#s4-dispatch
 
 # Resources
+
+Portions of this notebook were gratefully adapted from:
 
 - S4 Classes and Methods: https://kasperdanielhansen.github.io/genbioconductor/html/R_S4.html
 - A practical Tutorial on S4 Programming: https://www.bioconductor.org/help/course-materials/2013/CSAMA2013/friday/afternoon/S4-tutorial.pdf
 - https://www.cyclismo.org/tutorial/R/s4Classes.html
-- Advanced R: 
+- Advanced R: https://adv-r.hadley.nz/

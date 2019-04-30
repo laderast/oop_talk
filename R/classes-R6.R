@@ -57,8 +57,8 @@ StatPackageResultR6$set(which = "public", name = "print",
 
 AnovaResultR6 <- R6::R6Class(classname = "AnovaResultR6", 
                              inherit=StatPackageResultR6,
-                             public = 
-                               list(groups = NULL,
+                             public = list(
+                                    groups = NULL,
                                     
                                     initialize=function(data, statistics, groups){
                                       self$groups <- groups

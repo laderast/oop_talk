@@ -3,17 +3,19 @@
 ## Required Packages
 
 ```
-install.packages(c("R6", "here"))
+install.packages(c("R6", "here", "dplyr"))
 ```
-
 ## Getting Started
 
 1. Clone/Download this Repository
 2. Unzip (if necessary) to a folder
 3. Open the `oop_talk.rproj` file in RStudio
 
-## S3 slides
 
-<https://scotttalks.info/rs3/>
+## Talk Material
 
-`.R` and `.Rmd` files are in this repo.
+- [Intro Slides](http://laderast.github.io/oop_talk/)
+- [S3 Classes](https://scotttalks.info/rs3/) - Also see Rmd files in repo
+- [S4 Programming Notebook](http://laderast.github.io/oop_talk/S4-objects.nb.html) - Open up `S4-objects.Rmd` (R Notebook)
+- [R6 Programming Notebook](http://laderast.github.io/oop_talk/R6-objects.nb.html) - Open up `R6-objects.Rmd` (R Notebook)
+

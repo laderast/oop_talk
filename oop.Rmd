@@ -132,7 +132,7 @@ Use S4 if:
 
 # R6
 
-A lot like Java/Python Objects
+A lot like Java/Python Objects.
 
 Use R6 if:
 

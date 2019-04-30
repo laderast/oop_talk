@@ -23,7 +23,7 @@ setMethod(f="get_statistics",
 
 #making a generic with two arguments
 setGeneric(name = "get_significant_results",
-           def = function(object, cutoff){
+           def = function(object, cutoff, ...){
              standardGeneric("get_significant_results")
              
            })
@@ -56,4 +56,18 @@ setValidity(Class = "StatPackageResult", method=check_stats_object)
 
 #Inheritance: making a new class from our old class
 AnovaResult <- setClass("AnovaResult", 
-                        contains= "StatPackageResult")
+                        contains= "StatPackageResult",
+                        slots=c(groups="character"))
+
+#Overriding the get_statistics method for StatPackageResult
+setMethod("get_statistics",
+          signature = signature(object = "AnovaResult"),
+
+            definition = function(object){
+                print(object@groups)
+                #now run the code that belongs to the method
+                #for the superclass ("StatPackageResult")
+                callNextMethod(object)
+              }
+          )
+
