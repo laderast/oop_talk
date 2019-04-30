@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - abstraction/API for data in your code
   - Lets users/coders programatically access data without lots of code
+  - example: automatically connect to a database
 - allow for code reuse and modular code design
 - Can be a natural way to map data to a problem logically
 
@@ -28,13 +29,24 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - You need to go beyond `data.frame`s!
 - multiple pieces of information need to go together
-  - data.frame: when it was generated, who generated it
+  - `data.frame`: when it was generated, who generated it
 - You want your data to be part of a pipeline 
 - Have other people developing methods
+- Large code base that needs to be developed by different people
+  - Enables modular code
 
 > Any of these is an opportunity to encapsulate data together into an object!
 
-# Use Case
+# Object Oriented Design
+
+- Should be done in the start of a project!
+- Literally its own software engineering topic
+- Requires collaboration with domain knowledge experts
+  - How do they think about data?
+- [Object-Oriented Design Patterns explained using practical examples](https://medium.com/@ronnieschaniel/object-oriented-design-patterns-explained-using-practical-examples-84807445b092)
+
+
+# Use Case (S4 and S6)
 
 Results object for your package
 
@@ -57,22 +69,23 @@ We want people to do something with this object!
 From [Chambers](https://projecteuclid.org/download/pdfview_1/euclid.ss/1408368569):
 
 > The main ideas of object-oriented programming are also quite simple and intuitive:
-> 1. Everything we compute with is an object, and objects should be structured to suit the goals of our computations.
-> 2. For this, the key programming tool is a *class definition* saying that objects belonging to this class share structure defined by properties they all have, with the properties being themselves objects of some specified class.
-> 3. A class can inherit from (contain) a simpler superclass, such that an object of this class is also an object of the superclass.
-> 4. In order to compute with objects, we can define methods that are only used when objects are of certain classes.
+
+1. Everything we compute with is an object, and objects should be structured to suit the goals of our computations.
+2. For this, the key programming tool is a *class definition* saying that objects belonging to this class share structure defined by properties they all have, with the properties being themselves objects of some specified class.
+3. A class can inherit from (contain) a simpler superclass, such that an object of this class is also an object of the superclass.
+4. In order to compute with objects, we can define methods that are only used when objects are of certain classes.
 
 https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d14f9.html
 
 # Classes versus Objects
 
-- A *Class* is a description or an archtype
+- A *Class* is a description or an archetype
 - An *Object* is an instantiation of that class
 
 # Basic OOP Concepts
 
 - Object
-    - slots for storing data
+    - slots/fields for storing data
 - Methods
     - code specific to the object
     - may be separate from the object (S3,S4) or part of object (R6)
@@ -105,13 +118,13 @@ Use S3 if:
 
 # S4
 
-Stricter than S3; enforces data types in slots
+Stricter than S3; enforces data types in slots and methods
 
 Use S4 if:
 
-- The object is going to be used in more than one package
-  - Examples: `matrix` (`matrix` package), `ExpressionSet` (Bioconductor)
-- You need type checking for slots in your object
+- **The class is going to be used in more than one package**
+  - Examples: `matrix` (`Matrix` package), `ExpressionSet` (Bioconductor)
+- **You need type checking for slots in your object**
 - immutability is important
 - You need to check the validity of an object
   - make sure that multiple data elements in your object are consistent
@@ -123,20 +136,14 @@ A lot like Java/Python Objects
 
 Use R6 if:
 
-- **You want methods to be attached to your object**
 - **Maintaining state is important**
+- **You want methods to be attached to your object**
 - You want internal validity
 - You are used to Java/Python type objects
-- Mutability of objects is important to you
 - Public/Private methods
-
-# Object Oriented Design
-
-- Literally its own software engineering topic
-- Requires collaboration with domain knowledge experts
-- [Object-Oriented Design Patterns explained using practical examples](https://medium.com/@ronnieschaniel/object-oriented-design-patterns-explained-using-practical-examples-84807445b092)
 
 # Functionality of R's Object Systems
 
-- [Hadley Wickham: Advanced R on R's Object systems](http://adv-r.had.co.nz/OO-essentials.html)
+Portions of this tutorial are derived from: 
 
+- [Hadley Wickham: Advanced R on R's Object systems](http://adv-r.had.co.nz/OO-essentials.html)

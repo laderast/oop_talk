@@ -3,37 +3,313 @@ title: "R6 Classes"
 output: html_notebook
 ---
 
+Now let's talk about R6 classes. They aren't built into the base R distribution, but live in their own package, called `R6`.
+
+The two major features of R6 that are super useful are:
+
+1. *mutability*, which means that you can modify an object in place, which is useful for maintaining state, and
+
+2. *private* versus *public* fields, which is especially useful if you want your object to act like an API. 
+
 ```{r}
 library(here)
 library(R6)
 source(here("R/classes-R6.R"))
 ```
 
-## Making a new object
+## Making an new R6 object
 
+We're going to make a new object of class `StatPackageResultR6` first. We do this by calling `$new()` on the `StatsPackageResultR6` class:
 
+```{r}
+stat_frame <- data.frame(group=c("setosa", "virginica", "versicolor"), pvalue=c(0.5, 0.2, 0.001))
 
+my_stats_r6 <- StatPackageResultR6$new(data = iris, statistics = stat_frame)
+class(my_stats_r6)
+```
+
+## What's in the Object?
+
+If we just use `str()` on our object, we'll get information about the structure of the object. The first thing to note is that there are two main groupings: `public` and `private`. 
+
+```{r}
+str(my_stats_r6)
+```
 
 ## Methods are attached to the object
 
+If you look under `public`, you'll notice that there's a number of functions. These are the *methods* that are attached to the `my_stats_r6` object. You access these methods using the `$` operator. 
+
+```{r}
+my_stats_r6$get_statistics()
+```
+
+What about `get_significant_results()` method? Trying it, we get an error.
+
+```{r}
+my_stats_r6$get_significant_results()
+```
+
+Huh, we need to set a threshold. How do we do this?
+
+## Private versus Public
+
+R6 has an additional feature that is very useful; *private* fields verus *public* fields. Private fields are provided as an argument to the `private` argument, which is a list.
+
+Part of the reason for having *private* fields is that you don't want the user to directly access these values. There is no way to get the `threshold` value without using an `accessor` method. If we try that:
+
+```{r}
+my_stats_r6$get_threshold()
+
+```
+
+The threshold is not set for this object. We can set a value using `set_threshold()`:
+
+```{r}
+my_stats_r6$set_threshold(threshold = 0.02)
+```
+
+Whoa - there was no assignment operator! This is one of the features of R6 - they are processed in place.
+
+```{r}
+my_stats_r6$get_threshold()
+```
+
+Now if we try `get_significant_results` it will work:
+
+```{r}
+my_stats_r6$get_significant_results()
+```
+
+# How do we define methods in R6?
+
+Let's take a look at the `StatPackageResultR6` class. The first thing we notice is that there are two main arguments: `public` and `private`, which are both lists.
+
+```
+StatPackageResultR6 <- R6::R6Class(classname = "StatPackageResultR6",
+            public = list(
+              
+              #functions and public fields go here
+                  
+              }),
+            
+            private=list(
+              #private fields go here
+            
+              )
+            )
+
+```
+
+We define public methods as functions that are arguments in the list in `public`:
 
 
+```
+StatPackageResultR6 <- R6::R6Class(classname = "StatPackageResultR6",
+            public = list(
+              #methods and fields defined here:
+              
+              get_significant_results = function(){
+                
+                  if(is.null(private$threshold)){
+                    stop("Threshold is not set")
+                  }
+                
+                  filtered_results <- self$statistics %>%
+                    filter(pvalue < private$threshold)
+                  
+                  filtered_results
+                  
+              },
+              
+              # more methods defined below
+                  
+              }),
+            
+            private=list(
+              #private fields go here
+            
+              )
+            )
+```
 
-## Copy By Reference
+And our private field, `threshold`, is an argument to the `private` list:
 
-R6 objects are built on environments. 
+```
+StatPackageResultR6 <- R6::R6Class(classname = "StatPackageResultR6",
+            public = list(
+              
+              #functions and public fields go here
+                  
+              }),
+            
+            private=list(
+              threshold = NULL
+            
+              )
+            )
 
+```
+
+Let's take a look at the `get_significant_results()` method:
+
+```
+get_significant_results = function(){
+                
+                  if(is.null(private$threshold)){
+                    stop("Threshold is not set")
+                  }
+                
+                  filtered_results <- self$statistics %>%
+                    filter(pvalue < private$threshold)
+                  
+                  filtered_results
+                  
+              }
+```
+
+The first thing to note is the line: 
+
+`if(is.null(private$threshold)){`
+
+We're accessing the `threshold` value using `private`, because it's a private field.
+
+The next thing to note is the line:
+
+`filtered_results <- self$statistics %>%`
+
+We access the `statistics` field using `self`. Why is it `self` and not `public`? This naming convention comes from other object programming languages.
+
+# Setting values: `invisible(self)`
+
+When you set values, you have to end the method with `invisible(self)`. We're basically returning our modified object after we've set it. 
+
+```
+set_threshold = function(threshold){
+                private$threshold <- threshold
+                invisible(self)
+              }
+```
+
+# Important method: `$initialize()`
+
+One method you should always specify is `$initialize`, which defines the *constructor* for the method. This is the method that is used whenever we create a new object with `$new()`:
+
+```
+              #this is what we use to initialize our object
+              initialize = function(data, statistics){
+                self$data <- data
+                self$statistics <- statistics
+                invisible(self)
+              },
+```
+
+
+# Rather annoying: specifiying methods outside of the class
+
+The other thing to note is that you have to specify these functions as list arguments to the `public` list. Because they use `self` and `private` in the function, they can't be defined as separate functions outside of the list.
+
+For tidy-ness, and overall code legibility, you can use the `$set()` method to add individual methods to the class. For example, this is how we'll add a `$print()` method to our class:
+
+```
+StatPackageResultR6$set(which = "public", name = "print", 
+                        value = function() {
+                          
+                          print(head(self$data))
+                          print(head(self$statistics))
+                        }
+                      )
+```
 
 ## Maintaining State is Important: R6/Shiny
 
-The main use case I've found for R6 is for building data objects in Shiny. The data is encapsulated in an R6 object which can provide different versions of the data given a Shiny visualization.
+The main use case I've found for R6 in my work is for building data objects in Shiny. The data is encapsulated in an R6 object which can provide different formats of the data given a Shiny visualization.
 
-I use R6 in my Shiny apps, for modularity reasons.
+I use R6 in my Shiny apps, for modularity reasons. The same data object is used for different visualizations, so I can design the visualizations to expect a certain format (long or wide). This gives me the flexibility of changing the internal format of the data fields in the object if necessary.  
 
+## Inheritance
+
+R6 objects can inherit from each other. Here we're making a new class called `AnovaResultR6`, using the `inherit=` argument. Our `AnovaResultR6` class has an additional field we're calling `groups`.  
+
+We're overriding our `$initialize` method for the `StatPackageResultR6`. It sets the `groups` field, and then uses `super$initialize()` to set the other fields in the object. `super` is the equivalent of `NextMethod()` in S3.
+
+```
+AnovaResultR6 <- R6::R6Class(classname = "AnovaResultR6",
+                             inherit="StatPackageResultR6",
+                             public = 
+                               list(groups = NULL,
+                                    
+                                    initialize=function(data, statistics, groups){
+                                      self$groups <- groups
+                                      super$initialize(data, statistics)
+                                      invisible(self)
+                                    },
+                                    
+                                    print = function(){
+                                   print(self$groups)
+                                   super$print()
+                                 })
+                             )
+```
+
+
+Let's make an `AnovaResultR6` object:
+
+```{r}
+stat_frame <- data.frame(group=c("setosa", "virginica", "versicolor"), pvalue=c(0.5, 0.2, 0.001))
+
+anova_object <- AnovaResultR6$new(data=iris, 
+                                  statistics=stat_frame, groups=c("setosa", 
+                                                                  "virginica", 
+                                                                  "versicolor"))
+```
+
+We can see that our `AnovaResultR6` object inherits from `StatPackageResultR6` and that it has an additional `groups` field in public.
+
+```{r}
+str(anova_object)
+```
+
+And it can use the `$get_statistics()` method it inherited:
+
+```{r}
+anova_object$get_statistics()
+```
+
+## R6 Quirks: Copy By Reference
+
+R6 objects are built on environments. This means that if you assign `my_stats_r6` to a new object `new_my_stats_r6`, it's just a pointer to the original object.
+
+```{r}
+new_my_stats_r6 <- my_stats_r6
+
+new_my_stats_r6$set_threshold(0.1)
+
+my_stats_r6$get_threshold()
+```
+
+If you need to make a brand new object that is a separate copy of that object, you need to use the `$clone()` method:
+
+```{r}
+new_my_stats_r6 <- my_stats_r6$clone()
+
+new_my_stats_r6$set_threshold(0.4)
+
+new_my_stats_r6$get_threshold()
+
+my_stats_r6$get_threshold()
+
+```
+
+If your R6 object contains other R6 objects as fields and you want to clone these as well, you'll have to additionally apply the `deep=TRUE` argument.
 
 ## Note: R6 is Weird to most R users
 
 You probably don't want have your final results object as an R6 class. Mostly because most users aren't familiar with R6 and using methods attached to an object. I learned this the hard way.
+
+## Things we didn't cover
+
+- R6 Classes also have an `active` slot, which has its uses. 
 
 
 ## Resources

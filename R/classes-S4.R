@@ -47,7 +47,7 @@ setMethod("get_significant_results",
 check_stats_object <- function(object){
   #check whether statistics data.frame contains "pvalue"
   #as column name
-  if(colnames(get_statistics(object)) %in% "pvalue") {TRUE}
+  if("pvalue"  %in%  colnames(get_statistics(object))) {TRUE}
   else{ "statistics slot needs a pvalue column"}
 }
 

@@ -1,7 +1,7 @@
 library(R6)
 library(dplyr)
 
-R6::R6Class(classname = "StatPackageResult",
+StatPackageResultR6 <- R6::R6Class(classname = "StatPackageResultR6",
             public = list(
               
               #this is what we use to initialize our object
@@ -25,16 +25,17 @@ R6::R6Class(classname = "StatPackageResult",
             
               set_threshold = function(threshold){
                 private$threshold <- threshold
-              }
+                invisible(self)
+              },
               
               get_significant_results = function(){
                 
-                  if(is.null(self$threshold)){
+                  if(is.null(private$threshold)){
                     stop("Threshold is not set")
                   }
                 
                   filtered_results <- self$statistics %>%
-                    filter(pvalue < threshold)
+                    filter(pvalue < private$threshold)
                   
                   filtered_results
                   
@@ -44,3 +45,29 @@ R6::R6Class(classname = "StatPackageResult",
               threshold=NULL
               )
             )
+
+#Adding a print method to the class
+StatPackageResultR6$set(which = "public", name = "print", 
+                        value = function() {
+                          
+                          print(head(self$data))
+                          print(head(self$statistics))
+                        }
+                      )
+
+AnovaResultR6 <- R6::R6Class(classname = "AnovaResultR6", 
+                             inherit=StatPackageResultR6,
+                             public = 
+                               list(groups = NULL,
+                                    
+                                    initialize=function(data, statistics, groups){
+                                      self$groups <- groups
+                                      super$initialize(data, statistics)
+                                      invisible(self)
+                                    },
+                                    
+                                    print = function(){
+                                   print(self$groups)
+                                   super$print()
+                                 })
+                             )
