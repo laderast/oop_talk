@@ -3,7 +3,7 @@
 ## Required Packages
 
 ```
-install.packages(c("R6", "here"))
+install.packages(c("R6", "here", "dplyr"))
 ```
 ## Getting Started
 
