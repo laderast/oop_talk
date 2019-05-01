@@ -303,6 +303,10 @@ my_stats_r6$get_threshold()
 
 If your R6 object contains other R6 objects as fields and you want to clone these as well, you'll have to additionally apply the `deep=TRUE` argument.
 
+My R6 Classes: https://github.com/laderast/flowDashboard/blob/master/R/classes.R
+
+I don't necessarily think this is the best implementation, but you can see what I did.
+
 ## Note: R6 is Weird to most R users
 
 You probably don't want have your final results object as an R6 class. Mostly because most users aren't familiar with R6 and using methods attached to an object. I learned this the hard way.
