@@ -93,10 +93,10 @@ https://rstudio-pubs-static.s3.amazonaws.com/150296_904158e070594471864e89c10c0d
     - Can extend previously defined classes
     - Don't have to reinvent the wheel
     - can `override` parts of the definition
-- Polymorphism
-    - The ability to inherit from multiple classes
-    - Kind of a headache
-    - Not covered today
+    - not covered: multiple inheritance
+- Polymorphism 
+    - The ability for one code to react to different inputs
+    - S3/S4 Generic Dispatch -> Class-specific methods
   
 # WTH
 
