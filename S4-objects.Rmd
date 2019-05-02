@@ -174,7 +174,7 @@ StatPackageResult <- setClass("StatPackageResult",
 
 S4 methods are designed to be flexible. The downside to the flexibility is that they are a little harder to program with and set up. Whereas in S3, we could define a method for our S3 class by just naming a function with a dot (such as `print.stats_result`), S4 requires us to first establish a `generic` function. 
 
-The `generic` function is designed to use different code based on the class of the object. Take a look at the generic method `show`. You can see all of the different classes it works on. This `object="Module"` is called a *signature*, and it defines how the generic function decides which method code to dispatch.
+The `generic` function is designed to use different code based on the class of the object, much like S4 generics. Take a look at the generic method `show`. You can see all of the different classes it works on. This `object="Module"` is called a *signature*, and it defines how the generic function decides which method code to dispatch.
 
 Here are all the S4 methods for the `show` generic function based on their signature:
 
@@ -251,7 +251,7 @@ Show the new structure of our inherited object.
 str(anova_result_s4)
 ```
 
-# Extending methods
+# Extending methods from a superlcass
 
 Methods are class specific, but they also inherit from the *super* class that our new class is derived from. This means you can add extra code to a method by *overriding* the method for the new class and using `callNextMethod()` to execute the code belonging to the superclass (which is `StatPackageResult`).
 
@@ -278,7 +278,7 @@ get_statistics(anova_result_s4)
 
 - Updating old objects
 - Getting S3 and S4 to work together
-- Polymorphism
+- Multiple Inheritance and Dispatch
   - The ability of a class to inherit from multiple classes
   - Hadley covers this much better than I could: https://adv-r.hadley.nz/s4.html#s4-dispatch
 

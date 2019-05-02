@@ -221,11 +221,55 @@ StatPackageResultR6$set(which = "public", name = "print",
                       )
 ```
 
+# Important Method: `$validate()`
+
+The `$validate()` method lets you define a method to validate the contents of your R6 object, much like `setValidity()` let you do this for S4 objects.
+
+```
+StatPackageResultR6$set(which = "public", name = "validate", 
+                        value = function() {
+                          
+      if(!is.data.frame(self$statistics)){
+            warning("statistics field is not a data.frame")
+            return(FALSE)
+            }
+                          
+       if(!"pvalue" %in% colnames(self$statistics)){
+            warning("statistics field doesn't contain 
+                a pvalue column")
+                            return(FALSE)
+                          }
+                          #return TRUE otherwise
+                          return(TRUE)
+                        }
+)
+```
+
+Having a `$validate()` method is especially useful when getting and setting complex data types in fields.
+
+```{r}
+my_stats_r6$validate()
+```
+
+## Chaining Methods
+
+What do you think the following does?
+
+```{r}
+my_stats_r6$set_threshold(0.21)$get_significant_results()
+```
+
+Chaining multiple methods together is a style that is common in JavaScript and Python and can be done by chaining `$methods`
+
 ## Maintaining State is Important: R6/Shiny
 
 The main use case I've found for R6 in my work is for building data objects in Shiny. The data is encapsulated in an R6 object which can provide different formats of the data given a Shiny visualization.
 
 I use R6 in my Shiny apps, for modularity reasons. The same data object is used for different visualizations, so I can design the visualizations to expect a certain format (long or wide). This gives me the flexibility of changing the internal format of the data fields in the object if necessary.  
+
+Here are my R6 Classes: https://github.com/laderast/flowDashboard/blob/master/R/classes.R
+
+I don't necessarily think this is the best implementation, but you can see what I did.
 
 ## Inheritance
 
@@ -303,18 +347,16 @@ my_stats_r6$get_threshold()
 
 If your R6 object contains other R6 objects as fields and you want to clone these as well, you'll have to additionally apply the `deep=TRUE` argument.
 
-My R6 Classes: https://github.com/laderast/flowDashboard/blob/master/R/classes.R
-
-I don't necessarily think this is the best implementation, but you can see what I did.
-
 ## Note: R6 is Weird to most R users
 
 You probably don't want have your final results object as an R6 class. Mostly because most users aren't familiar with R6 and using methods attached to an object. I learned this the hard way.
 
+The one exception is when your package is going to be used by developers - they will probably be more familiar with the R6 object structure and getting things out of it.
+
 ## Things we didn't cover
 
 - R6 Classes also have an `active` slot, which has its uses. 
-
+- Multiple inheritance
 
 ## Resources
 

@@ -55,6 +55,24 @@ StatPackageResultR6$set(which = "public", name = "print",
                         }
                       )
 
+#Adding a validate method to the class
+StatPackageResultR6$set(which = "public", name = "validate", 
+                        value = function() {
+                          
+                          if(!is.data.frame(self$statistics)){
+                            warning("statistics field is not a data.frame")
+                            return(FALSE)
+                          }
+                          
+                          if(!"pvalue" %in% colnames(self$statistics)){
+                            warning("statistics field doesn't contain 
+                a pvalue column")
+                            return(FALSE)
+                          }
+                          return(TRUE)
+                        }
+)
+
 AnovaResultR6 <- R6::R6Class(classname = "AnovaResultR6", 
                              inherit=StatPackageResultR6,
                              public = list(
