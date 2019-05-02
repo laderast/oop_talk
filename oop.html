@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Scott Chamberlain and Ted Laderas" />
-  <meta name="date" content="2019-04-30" />
+  <meta name="date" content="2019-05-01" />
   <title>Object Oriented Programming in R</title>
   <style type="text/css">code{white-space: pre;}</style>
   <style type="text/css">
@@ -367,7 +367,7 @@ list-style-type: none;
   <p class="author">
 Scott Chamberlain and Ted Laderas
   </p>
-  <p class="date">2019-04-30</p>
+  <p class="date">2019-05-01</p>
 </div>
 <div id="context-for-object-oriented-programming" class="slide section level1">
 <h1>Context for Object Oriented Programming</h1>
@@ -488,12 +488,12 @@ Scott Chamberlain and Ted Laderas
 <li>Can extend previously defined classes</li>
 <li>Don’t have to reinvent the wheel</li>
 <li>can <code>override</code> parts of the definition</li>
+<li>not covered: multiple inheritance</li>
 </ul></li>
 <li>Polymorphism
 <ul>
-<li>The ability to inherit from multiple classes</li>
-<li>Kind of a headache</li>
-<li>Not covered today</li>
+<li>The ability for one code to react to different inputs</li>
+<li>S3/S4 Generic Dispatch -&gt; Class-specific methods</li>
 </ul></li>
 </ul>
 </div>
@@ -536,7 +536,7 @@ Scott Chamberlain and Ted Laderas
 </div>
 <div id="r6" class="slide section level1">
 <h1>R6</h1>
-<p>A lot like Java/Python Objects</p>
+<p>A lot like Java/Python Objects.</p>
 <p>Use R6 if:</p>
 <ul>
 <li><strong>Maintaining state is important</strong></li>
