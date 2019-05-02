@@ -19,3 +19,17 @@ install.packages(c("R6", "here", "dplyr"))
 - [S4 Classes Programming Notebook](http://laderast.github.io/oop_talk/S4-objects.nb.html) - Open up `S4-objects.Rmd` (R Notebook)
 - [R6 Classes Programming Notebook](http://laderast.github.io/oop_talk/R6-objects.nb.html) - Open up `R6-objects.Rmd` (R Notebook)
 
+## Acknowledgements
+
+Portions of this tutorial are gratefully derived from: 
+
+- [Hadley Wickham: Advanced R on R's Object systems](http://adv-r.had.co.nz/OO-essentials.html)
+- [S4 Classes and Methods](https://kasperdanielhansen.github.io/genbioconductor/html/R_S4.html)
+- [A practical Tutorial on S4 Programming](https://www.bioconductor.org/help/course-materials/2013/CSAMA2013/friday/afternoon/S4-tutorial.pdf)
+- [S4 Classes](https://www.cyclismo.org/tutorial/R/s4Classes.html)
+- [Advanced R](https://adv-r.hadley.nz/)
+
+## License
+
+All code is licensed with a MIT License (see LICENSE.txt)
+All Material is CC 4.0 By (Please link to us if you use this material!)
