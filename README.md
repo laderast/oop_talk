@@ -1,5 +1,7 @@
 # Slides and Project Workspace for Object Oriented Systems in R: S3, S4, and R6
 
+Scott Chamberlain and Ted Laderas
+
 ## Required Packages
 
 ```
@@ -28,6 +30,8 @@ Portions of this tutorial are gratefully derived from:
 - [A practical Tutorial on S4 Programming](https://www.bioconductor.org/help/course-materials/2013/CSAMA2013/friday/afternoon/S4-tutorial.pdf)
 - [S4 Classes](https://www.cyclismo.org/tutorial/R/s4Classes.html)
 - [Advanced R](https://adv-r.hadley.nz/)
+
+Thanks to Jim Tyhurst for pointing out that I was mixing multiple inheritance with polymorphism. This mistake has been corrected throughout the material.
 
 ## License
 
